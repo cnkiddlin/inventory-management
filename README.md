@@ -4,6 +4,15 @@
 
 所有库存变更均由后端服务层在数据库事务中完成。AI 智能体后续应直接调用 `/api/v1` REST API，不应访问数据库。
 
+## 在线环境
+
+系统已部署到 OpenShift，前端页面和 API 使用同一个 Route：
+
+- 应用地址：https://inventory-inventory-management.apps.itz-00k64z.infra01-lb.tok04.techzone.ibm.com
+- Swagger UI：https://inventory-inventory-management.apps.itz-00k64z.infra01-lb.tok04.techzone.ibm.com/docs
+- 健康检查：https://inventory-inventory-management.apps.itz-00k64z.infra01-lb.tok04.techzone.ibm.com/api/v1/health
+- OpenShift 项目：`inventory-management`
+
 ## 功能
 
 - Dashboard：库存总量、SKU 数、库存价值、低库存/缺货数、14 天趋势、分类分布和预警列表

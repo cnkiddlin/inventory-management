@@ -1,9 +1,11 @@
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.v1.router import api_router
@@ -14,6 +16,8 @@ from app.core.logging import configure_logging
 
 configure_logging(settings.debug)
 logger = logging.getLogger(__name__)
+
+STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
 
 app = FastAPI(
     title=settings.app_name,
@@ -99,7 +103,9 @@ async def unexpected_error_handler(_: Request, exc: Exception) -> JSONResponse:
 
 
 @app.get("/", include_in_schema=False)
-def root() -> dict[str, str]:
+def root():
+    if (STATIC_DIR / "index.html").is_file():
+        return FileResponse(STATIC_DIR / "index.html")
     return {
         "name": settings.app_name,
         "docs": "/docs",
@@ -109,3 +115,28 @@ def root() -> dict[str, str]:
 
 
 app.include_router(api_router, prefix=settings.api_v1_prefix)
+
+
+if STATIC_DIR.is_dir():
+    assets_dir = STATIC_DIR / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="frontend-assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False, response_model=None)
+    def serve_frontend(full_path: str) -> FileResponse | JSONResponse:
+        if full_path.startswith("api/"):
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "error": {
+                        "code": "not_found",
+                        "message": "接口不存在",
+                        "details": None,
+                    }
+                },
+            )
+        static_root = STATIC_DIR.resolve()
+        candidate = (static_root / full_path).resolve()
+        if candidate.is_file() and static_root in candidate.parents:
+            return FileResponse(candidate)
+        return FileResponse(static_root / "index.html")
