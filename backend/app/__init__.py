@@ -1,0 +1,2 @@
+"""StockPilot backend application package."""
+
