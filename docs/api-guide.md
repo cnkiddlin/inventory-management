@@ -104,13 +104,26 @@ curl -s http://localhost:8000/api/v1/dashboard
 curl -s "http://localhost:8000/api/v1/products?page=1&page_size=20&search=交换机&status=ACTIVE"
 ```
 
+商品响应包含 `model` 字段（OEM 工程件号，可为空字符串）。`search` 同时匹配 `sku`、`name` 和 `model`。
+
+```json
+{
+  "id": 14,
+  "sku": "CH-ARM-2900200EA01",
+  "name": "前下摆臂总成",
+  "model": "2900200-EA01",
+  "category_id": 1,
+  "category_name": "底盘系统"
+}
+```
+
 ### 库存查询
 
 ```bash
 curl -s "http://localhost:8000/api/v1/inventory?warehouse_id=1&category_id=1&status=LOW_STOCK&page=1&page_size=20"
 ```
 
-支持的商品筛选参数：`product_id`、`warehouse_id`、`category_id`、`status`、`search`。
+支持的商品筛选参数：`product_id`、`warehouse_id`、`category_id`、`status`、`search`；`search` 同时匹配 SKU、名称和 OEM 件号。
 
 ### 库存预警
 

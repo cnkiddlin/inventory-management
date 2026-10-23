@@ -41,6 +41,7 @@ class CatalogService:
             id=product.id,
             sku=product.sku,
             name=product.name,
+            model=product.model,
             description=product.description,
             category_id=product.category_id,
             category_name=product.category.name,
@@ -168,6 +169,7 @@ class CatalogService:
         product = Product(
             sku=payload.sku,
             name=payload.name.strip(),
+            model=payload.model,
             description=payload.description,
             category_id=payload.category_id,
             cost_price=Decimal(str(payload.cost_price)),
@@ -285,4 +287,3 @@ class CatalogService:
             self.db.rollback()
             raise ConflictError("仓库编码已存在") from exc
         return self.get_warehouse(warehouse_id)
-

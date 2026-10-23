@@ -47,7 +47,7 @@ PostgreSQL / stockpilot_db
 核心表：
 
 - `categories`：商品分类；与商品一对多。
-- `products`：SKU、名称、分类、成本/销售价格、安全库存和状态。
+- `products`：SKU、名称、OEM 件号、分类、成本/销售价格、安全库存和状态。
 - `warehouses`：仓库编码、名称、地址、负责人、容量和状态。
 - `inventory`：商品与仓库的唯一组合，保存账面库存和预留库存。
 - `inbound_orders` / `inbound_order_items`：入库单及明细。

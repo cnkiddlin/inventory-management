@@ -77,6 +77,9 @@ export function TransactionsPage() {
         <div>
           <div className="font-medium text-slate-800">{record.product_name}</div>
           <div className="font-mono text-[11px] text-slate-400">{record.sku}</div>
+          {record.model && (
+            <div className="font-mono text-[11px] text-slate-400">OEM {record.model}</div>
+          )}
         </div>
       ),
     },

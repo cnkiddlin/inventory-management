@@ -35,7 +35,13 @@ class InventoryRepository(BaseRepository):
         filters = []
         if search:
             term = f"%{search.strip()}%"
-            filters.append(or_(Product.sku.ilike(term), Product.name.ilike(term)))
+            filters.append(
+                or_(
+                    Product.sku.ilike(term),
+                    Product.name.ilike(term),
+                    Product.model.ilike(term),
+                )
+            )
         if product_id:
             filters.append(Inventory.product_id == product_id)
         if warehouse_id:
@@ -104,7 +110,13 @@ class InventoryRepository(BaseRepository):
         filters = [Product.status == "ACTIVE", current_stock <= Product.safety_stock]
         if search:
             term = f"%{search.strip()}%"
-            filters.append(or_(Product.sku.ilike(term), Product.name.ilike(term)))
+            filters.append(
+                or_(
+                    Product.sku.ilike(term),
+                    Product.name.ilike(term),
+                    Product.model.ilike(term),
+                )
+            )
         if status == "OUT_OF_STOCK":
             filters.append(current_stock == 0)
         elif status == "LOW_STOCK":

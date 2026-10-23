@@ -32,6 +32,7 @@ class Product(TimestampMixin, Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     sku: Mapped[str] = mapped_column(String(60), unique=True, nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(160), nullable=False, index=True)
+    model: Mapped[str] = mapped_column(String(80), default="", nullable=False, index=True)
     description: Mapped[str | None] = mapped_column(Text)
     category_id: Mapped[int] = mapped_column(
         ForeignKey("categories.id", ondelete="RESTRICT"), nullable=False, index=True
@@ -65,4 +66,3 @@ class Warehouse(TimestampMixin, Base):
     status: Mapped[str] = mapped_column(String(20), default="ACTIVE", nullable=False, index=True)
 
     inventory_records: Mapped[list["Inventory"]] = relationship(back_populates="warehouse")
-

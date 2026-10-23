@@ -20,6 +20,7 @@ export interface Product {
   id: number
   sku: string
   name: string
+  model: string
   description: string | null
   category_id: number
   category_name: string
@@ -57,6 +58,7 @@ export interface InventoryRecord {
   product_id: number
   sku: string
   product_name: string
+  model: string
   category_name: string
   warehouse_id: number
   warehouse_code: string
@@ -81,6 +83,7 @@ export interface InventoryAlert {
   product_id: number
   sku: string
   product_name: string
+  model: string
   category_name: string
   unit: string
   current_stock: number
@@ -105,6 +108,7 @@ export interface InventoryTransaction {
   product_id: number
   sku: string
   product_name: string
+  model: string
   warehouse_id: number
   warehouse_name: string
   transaction_type: TransactionType
@@ -247,4 +251,3 @@ export interface LineItemPayload {
   unit_cost?: number
   unit_price?: number
 }
-

@@ -63,7 +63,13 @@ class CatalogRepository(BaseRepository):
         filters = []
         if search:
             term = f"%{search.strip()}%"
-            filters.append(or_(Product.sku.ilike(term), Product.name.ilike(term)))
+            filters.append(
+                or_(
+                    Product.sku.ilike(term),
+                    Product.name.ilike(term),
+                    Product.model.ilike(term),
+                )
+            )
         if category_id:
             filters.append(Product.category_id == category_id)
         if status:
@@ -179,4 +185,3 @@ class CatalogRepository(BaseRepository):
                 .order_by(Warehouse.code)
             ).all()
         )
-

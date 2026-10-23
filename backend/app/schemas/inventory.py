@@ -10,6 +10,7 @@ class InventoryRead(BaseModel):
     product_id: int
     sku: str
     product_name: str
+    model: str
     category_name: str
     warehouse_id: int
     warehouse_code: str
@@ -27,6 +28,7 @@ class InventoryAlertRead(BaseModel):
     product_id: int
     sku: str
     product_name: str
+    model: str
     category_name: str
     unit: str
     current_stock: int
@@ -46,6 +48,7 @@ class InventoryTransactionRead(BaseModel):
     product_id: int
     sku: str
     product_name: str
+    model: str
     warehouse_id: int
     warehouse_name: str
     transaction_type: str
@@ -56,4 +59,3 @@ class InventoryTransactionRead(BaseModel):
     reference_no: str | None
     notes: str | None
     created_at: datetime
-

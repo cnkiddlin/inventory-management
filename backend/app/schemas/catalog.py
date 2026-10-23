@@ -31,6 +31,7 @@ class CategoryRead(BaseModel):
 class ProductBase(BaseModel):
     sku: str = Field(min_length=2, max_length=60)
     name: str = Field(min_length=2, max_length=160)
+    model: str = Field(default="", max_length=80)
     description: str | None = Field(default=None, max_length=2000)
     category_id: int = Field(gt=0)
     cost_price: float = Field(ge=0)
@@ -52,6 +53,7 @@ class ProductCreate(ProductBase):
 class ProductUpdate(BaseModel):
     sku: str | None = Field(default=None, min_length=2, max_length=60)
     name: str | None = Field(default=None, min_length=2, max_length=160)
+    model: str | None = Field(default=None, max_length=80)
     description: str | None = Field(default=None, max_length=2000)
     category_id: int | None = Field(default=None, gt=0)
     cost_price: float | None = Field(default=None, ge=0)
@@ -72,6 +74,7 @@ class ProductRead(BaseModel):
     id: int
     sku: str
     name: str
+    model: str
     description: str | None
     category_id: int
     category_name: str
@@ -127,4 +130,3 @@ class WarehouseRead(BaseModel):
     total_value: float = 0
     utilization_percent: float = 0
     created_at: datetime
-

@@ -120,6 +120,7 @@ def test_inventory_business_flow_and_guardrails(client: TestClient) -> None:
     suffix = uuid4().hex[:8].upper()
     category_name = f"测试分类-{suffix}"
     sku = f"PYTEST-{suffix}"
+    model = f"OEM-{suffix}"
     warehouse_codes = [f"T-A-{suffix}", f"T-B-{suffix}"]
 
     try:
@@ -135,6 +136,7 @@ def test_inventory_business_flow_and_guardrails(client: TestClient) -> None:
             json={
                 "sku": sku,
                 "name": f"自动化测试商品 {suffix}",
+                "model": model,
                 "category_id": category_id,
                 "cost_price": 10,
                 "selling_price": 15,
@@ -145,6 +147,12 @@ def test_inventory_business_flow_and_guardrails(client: TestClient) -> None:
         )
         assert product_response.status_code == 201, product_response.text
         product_id = product_response.json()["id"]
+        assert product_response.json()["model"] == model
+
+        product_search = client.get("/api/v1/products", params={"search": model})
+        assert product_search.status_code == 200
+        assert product_search.json()["total"] == 1
+        assert product_search.json()["items"][0]["id"] == product_id
 
         warehouse_ids = []
         for index, code in enumerate(warehouse_codes, start=1):
@@ -176,6 +184,13 @@ def test_inventory_business_flow_and_guardrails(client: TestClient) -> None:
         assert confirmed_inbound.status_code == 200, confirmed_inbound.text
         assert confirmed_inbound.json()["status"] == "CONFIRMED"
         assert _inventory_quantity(client, product_id, warehouse_ids[0]) == 15
+
+        inventory = client.get(
+            "/api/v1/inventory",
+            params={"product_id": product_id, "warehouse_id": warehouse_ids[0]},
+        )
+        assert inventory.status_code == 200
+        assert inventory.json()["items"][0]["model"] == model
 
         duplicate_confirm = client.post(f"/api/v1/inbound-orders/{inbound_id}/confirm")
         assert duplicate_confirm.status_code == 409
@@ -241,4 +256,3 @@ def test_inventory_business_flow_and_guardrails(client: TestClient) -> None:
         assert transactions.json()["total"] == 4
     finally:
         _cleanup(sku, warehouse_codes, category_name)
-

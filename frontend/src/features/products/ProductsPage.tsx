@@ -32,6 +32,7 @@ const currency = new Intl.NumberFormat('zh-CN', {
 interface ProductFormValues {
   sku: string
   name: string
+  model?: string
   description?: string
   category_id: number
   cost_price: number
@@ -67,7 +68,14 @@ export function ProductsPage() {
   const openCreate = () => {
     setEditing(null)
     form.resetFields()
-    form.setFieldsValue({ unit: '件', safety_stock: 20, status: 'ACTIVE', cost_price: 0, selling_price: 0 })
+    form.setFieldsValue({
+      model: '',
+      unit: '件',
+      safety_stock: 20,
+      status: 'ACTIVE',
+      cost_price: 0,
+      selling_price: 0,
+    })
     setModalOpen(true)
   }
 
@@ -76,6 +84,7 @@ export function ProductsPage() {
     form.setFieldsValue({
       sku: record.sku,
       name: record.name,
+      model: record.model,
       description: record.description ?? undefined,
       category_id: record.category_id,
       cost_price: record.cost_price,
@@ -116,6 +125,9 @@ export function ProductsPage() {
         <div>
           <div className="font-medium text-slate-800">{record.name}</div>
           <div className="mt-0.5 font-mono text-[11px] text-slate-400">{record.sku}</div>
+          {record.model && (
+            <div className="font-mono text-[11px] text-slate-400">OEM {record.model}</div>
+          )}
         </div>
       ),
     },
@@ -176,7 +188,7 @@ export function ProductsPage() {
     <div>
       <PageHeader
         title="商品管理"
-        description="维护 SKU、分类、成本价格与安全库存阈值。库存余额由入库、出库与调拨业务实时计算。"
+        description="维护 SKU、OEM 件号、分类、成本价格与安全库存阈值。库存余额由入库、出库与调拨业务实时计算。"
         actions={
           <Button type="primary" icon={<PackagePlus size={16} />} onClick={openCreate}>
             新增商品
@@ -188,7 +200,7 @@ export function ProductsPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Input.Search
             allowClear
-            placeholder="搜索 SKU 或商品名称"
+            placeholder="搜索 SKU、OEM 件号或商品名称"
             prefix={<Search size={15} className="text-slate-400" />}
             onSearch={(value) => {
               setSearch(value.trim())
@@ -271,6 +283,11 @@ export function ProductsPage() {
             <Col xs={24} sm={12}>
               <Form.Item name="name" label="商品名称" rules={[{ required: true, message: '请输入商品名称' }]}>
                 <Input placeholder="商品名称" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item name="model" label="OEM 件号">
+                <Input placeholder="例如 2900200-EA01" />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
